@@ -17,6 +17,7 @@ var moduleRoot = (function(_rootPath) {
 	return parts.join(path.sep);
 })(module.parent ? module.parent.paths[0] : module.paths[0]);
 
+process.log = console.log;
 
 /**
  * Keystone Class
@@ -226,6 +227,7 @@ Keystone.prototype.applyUpdates = function(callback) {
  */
 
 Keystone.prototype.console = {};
+Keystone.prototype.console.log = console.log;
 Keystone.prototype.console.err = function(type, msg) {
 	if (keystone.get('logger')) {
 		var dashes = '\n------------------------------------------------\n';
