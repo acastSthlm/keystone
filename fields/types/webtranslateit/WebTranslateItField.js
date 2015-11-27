@@ -32,8 +32,8 @@ module.exports = Field.create({
 	},
 
 	renderField: function () {
-		var key      = this.props.value.key ? this.props.value.key : '';
 		var fallback = this.props.value.fallback ? this.props.value.fallback : '';
+		var key      = this.props.value.key && this.props.value.key !== this.props.ops[0].value ? this.props.value.key : fallback ? this.props.ops[0].value : '';
 
 		return (
 			<div>

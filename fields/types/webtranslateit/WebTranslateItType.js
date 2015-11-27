@@ -59,12 +59,14 @@ WebTranslateIt.prototype.addToSchema = function() {
  * Validates that a valid option has been provided in a data object
  */
 WebTranslateIt.prototype.validateInput = function(data, required, item) {
-	if (required) {
-		var key      = data[this.paths.key];
-		var fallback = data[this.paths.fallback];
-		return fallback !== undefined && fallback !== null && key !== undefined && key !== null;
+	var key      = data[this.paths.key];
+	var fallback = data[this.paths.fallback];
+	// if any is set, both need to be set
+	if (key || fallback) {
+		return key && fallback;
 	} else {
-		return true;
+	// if none is set, this is cool, too, unless required
+		return required !== true;
 	}
 };
 
@@ -80,15 +82,19 @@ WebTranslateIt.prototype.isModified = function(item) {
 WebTranslateIt.prototype.updateItem = function(item, data) {
 	if (!_.isObject(data)) return;
 
-	var paths = this.paths;
-	var path  = paths['key'];
-	if (data[path]) {
-		item.set(path, data[path]);
+	var paths   = this.paths;
+	var keyPath = paths.key;
+	if (data[keyPath]) {
+		item.set(keyPath, data[keyPath]);
+	} else {
+		item.set(keyPath, '');
 	}
 
-	var path = paths['fallback'];
-	if (data[path]) {
-		item.set(path, data[path]);
+	var fallbackPath = paths.fallback;
+	if (data[fallbackPath]) {
+		item.set(fallbackPath, data[fallbackPath]);
+	} else {
+		item.set(fallbackPath, '');
 	}
 };
 
