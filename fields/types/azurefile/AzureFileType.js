@@ -225,7 +225,6 @@ azurefile.prototype.updateItem = function(item, data) {//eslint-disable-line no-
  */
 
 azurefile.prototype.uploadFile = function(item, file, update, callback) {
-
 	var field = this,
 		prefix = field.options.datePrefix ? moment().format(field.options.datePrefix) + '-' : '',//eslint-disable-line no-unused-vars
 		filetype = file.mimetype || file.type;
@@ -244,13 +243,13 @@ azurefile.prototype.uploadFile = function(item, file, update, callback) {
 		var container = field.options.containerFormatter(item, file.name);
 
 		blobService.createContainerIfNotExists(container, { publicAccessLevel : 'blob' }, function(err) {
-			
+
 			if (err) return callback(err);
 
 			blobService.createBlockBlobFromLocalFile(container, field.options.filenameFormatter(item, file.name), file.path, function(err, blob, res) {//eslint-disable-line no-unused-vars
 
 				if (err) return callback(err);
-			
+
 				var fileData = {
 					filename: blob.blob,
 					size: file.size,
@@ -264,8 +263,16 @@ azurefile.prototype.uploadFile = function(item, file, update, callback) {
 					item.set(field.path, fileData);
 				}
 
+				if (field.options.post) {
+					field.options.post(fileData, function (err) {
+						callback(err, fileData);
+					});
+				} else {
+					callback(null, fileData);
+				}
+
 				callback(null, fileData);
-					
+
 			});
 		});
 	};
